@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+    container_name: mongodb
+    restart: always
+
+  user-service:
+    build:
+      context: .
+      dockerfile: services/user-service/Dockerfile
+    ports:
+      - "3001:3001"
+    container_name: user-service
+    restart: unless-stopped
+
+  course-service:
+    build:
+      context: .
+      dockerfile: services/course-service/Dockerfile
+    ports:
+      - "3002:3002"
+    container_name: course-service
+    restart: unless-stopped
+
+  lesson-service:
+    build:
+      context: .
+      dockerfile: services/lesson-service/Dockerfile
+    ports:
+      - "3003:3003"
+    container_name: lesson-service
+    restart: unless-stopped
+
+  comment-service:
+    build:
+      context: .
+      dockerfile: services/comment-service/Dockerfile
+    ports:
+      - "3004:3004"
+    container_name: comment-service
+    restart: unless-stopped
+
+  enrollment-service:
+    build:
+      context: .
+      dockerfile: services/enrollment-service/Dockerfile
+    ports:
+      - "3005:3005"
+    container_name: enrollment-service
+    restart: unless-stopped
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    container_name: api-gateway
+    depends_on:
+      - user-service
+      - course-service
+      - lesson-service
+      - comment-service
+      - enrollment-service
+    restart: unless-stopped
